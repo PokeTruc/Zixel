@@ -20,3 +20,14 @@ window.onload = function() {
     
     renderShop();
 };
+// Liaison des boutons
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLeaderboard = document.getElementById('btn-leaderboard');
+    if (btnLeaderboard) {
+        btnLeaderboard.addEventListener('click', showLeaderboard);
+    }
+    
+    // Autres liaisons si nécessaire
+    const btnProfile = document.querySelector('button[onclick*="showProfile"]');
+    if (btnProfile) btnProfile.addEventListener('click', showProfile);
+});

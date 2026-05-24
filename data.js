@@ -5,7 +5,7 @@ const SUPABASE_URL = "https://vraie-url-de-ton-projet.supabase.co";
 const SUPABASE_KEY = "vraie-cle-anon-très-longue-ici"; 
 
 // Initialisation de Supabase
-let supabaseClient = null;
+let supabaseClient = null;!$
 try {
     if (typeof supabase !== 'undefined' && SUPABASE_URL !== "https://vraie-url-de-ton-projet.supabase.co") {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -201,3 +201,44 @@ window.addEventListener('DOMContentLoaded', async () => {
     await loadData();
     console.log("Système de données prêt.");
 });
+// --- CONFIGURATION RENDER API ---
+// Remplace par l'URL de ton site Render (ex: https://zixel-ultimate.onrender.com)
+const RENDER_URL = "https://TON_PROJET.onrender.com"; 
+
+let db = { users: {}, leaderboard: [] };
+let isInitialized = false;
+
+async function loadData() {
+    if (isInitialized) return db;
+    try {
+        const response = await fetch(`${RENDER_URL}/api/leaderboard`);
+        if (!response.ok) throw new Error("Erreur");
+        const data = await response.json();
+        db.leaderboard = data;
+        db.users = {};
+        data.forEach(u => db.users[u.username] = u);
+        console.log("✅ Données chargées depuis Render !");
+        isInitialized = true;
+        return db;
+    } catch (e) {
+        console.error("Erreur Render:", e);
+        return { users: {}, leaderboard: [] };
+    }
+}
+
+async function saveScoreToServer(username, score, level) {
+    try {
+        await fetch(`${RENDER_URL}/api/score`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, score, level })
+        });
+        console.log("Score envoyé à Render !");
+        await loadData(); // Recharger le classement
+    } catch (e) {
+        console.error("Erreur envoi Render:", e);
+    }
+}
+
+// ... (Le reste du code reste identique : getUser, createUser, etc.) ...
+// N'oublie pas d'ajouter les autres fonctions (getUser, createUser, etc.) que tu as déjà dans ton fichier data.js

@@ -21,10 +21,7 @@
         return;
     }
 
-    // ... (Le reste du code de renderShop reste identique à ce que je t'ai donné avant) ...
-    // Juste assure-toi que le début est bien celui-ci :
-    
-    if (avContainer) {
+        if (avContainer) {
         avContainer.innerHTML = '';
         ITEMS.avatars.forEach(item => {
             const owned = user.inventory && user.inventory.includes(item.id);
