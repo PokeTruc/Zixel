@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zixel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- FENÊTRE DE CONNEXION / INSCRIPTION -->
+    <div id="auth-container" class="z-container">
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchAuth('login')">Connexion</button>
+            <button class="tab-btn" onclick="switchAuth('register')">Inscription</button>
+            <button class="tab-btn" onclick="switchAuth('recover')">Récupération</button>
+        </div>
+
+        <!-- Login -->
+        <div id="view-login" class="auth-view active">
+            <h2 class="z-title">🔐 Connexion</h2>
+            <input type="text" id="login-user" class="z-input" placeholder="Pseudo">
+            <input type="password" id="login-pass" class="z-input" placeholder="Mot de passe">
+            <button id="btn-login" class="z-btn">Entrer dans la platforme de minis-jeux Zixel !</button>
+            <div id="login-msg" class="z-msg"></div>
+        </div>
+
+        <!-- Register -->
+        <div id="view-register" class="auth-view">
+            <h2 class="z-title">📝 Inscription</h2>
+            <input type="text" id="reg-user" class="z-input" placeholder="Pseudo (min 3)">
+            <input type="email" id="reg-email" class="z-input" placeholder="Email (Récupération)">
+            <input type="password" id="reg-pass" class="z-input" placeholder="Mot de passe (min 6)">
+            <button id="btn-register" class="z-btn">Créer mon compte</button>
+            <div id="reg-msg" class="z-msg"></div>
+        </div>
+
+        <!-- Recover -->
+        <div id="view-recover" class="auth-view">
+            <h2 class="z-title">🔑 Récupération</h2>
+            <input type="email" id="rec-email" class="z-input" placeholder="Votre Email">
+            <button id="btn-recover" class="z-btn">Envoyer le lien</button>
+            <div id="rec-msg" class="z-msg"></div>
+        </div>
+    </div>
+
+    <!-- INTERFACE PRINCIPALE (Après connexion) -->
+    <div id="main-interface" style="display:none;">
+        
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="user-info">
+                <div id="avatar-display" class="avatar-preview">👤</div>
+                <div class="user-details">
+                    <h3 id="display-name">Joueur</h3>
+                    <div class="level-bar">
+                        <span id="level-display">Niveau 1</span>
+                        <div class="progress"><div id="xp-bar" style="width:0%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="currency-display">
+                💎 <span id="gem-count">0</span> Gemmes
+            </div>
+            <button class="icon-btn" onclick="openModal('settings-modal')">⚙️</button>
+            <button class="icon-btn" onclick="openModal('shop-modal')">🛒</button>
+            <button class="icon-btn" onclick="logout()">🚪</button>
+        </header>
+
+        <!-- MENU DES JEUX -->
+        <div id="games-menu" class="container">
+            <h1>🎮 Arcade Zixel</h1>
+            <div class="games-grid" id="games-list">
+                <!-- Généré par JS -->
+            </div>
+            <button class="z-btn profile-btn" onclick="showProfile()">👤 Profil & Stats</button>
+            <button class="z-btn profile-btn" onclick="showLeaderboard()">🏆 Classement Global</button>
+      </div>
+
+        <!-- ZONE DE JEU (Dynamique) -->
+        <div id="game-stage" class="container hidden">
+            <div class="game-controls">
+                <button class="back-btn" onclick="closeGame()">⬅️ Retour</button>
+                <div id="game-bonus-display" class="bonus-badge hidden">Bonus Actif: <span id="bonus-name">-</span></div>
+            </div>
+            <div id="game-content"></div>
+        </div>
+
+        <!-- PROFIL -->
+        <div id="profile-area" class="container hidden">
+            <h2>👤 Mon Profil</h2>
+            <div class="profile-stats-grid" id="profile-stats">
+                <!-- Généré par JS -->
+            </div>
+            <div class="settings-section">
+                <h3>Modifier le compte</h3>
+                <input type="text" id="edit-user" placeholder="Nouveau pseudo">
+                <input type="password" id="edit-pass" placeholder="Nouveau mot de passe">
+                <button class="z-btn sec" onclick="updateAccount()">Mettre à jour</button>
+            </div>
+        </div>
+
+        <!-- CLASSEMENT -->
+        <div id="leaderboard-area" class="container hidden">
+            <h2>🏆 Classement Global (Local)</h2>
+            <table class="leaderboard-table">
+                <thead><tr><th>Rang</th><th>Joueur</th><th>Niveau</th><th>Gemmes Zixel</th><th>Score Total</th></tr></thead>
+                <tbody id="leaderboard-body"></tbody>
+            </table>
+        </div>
+
+        <!-- MODAL SHOP -->
+        <div id="shop-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('shop-modal')">&times;</span>
+                <h2>🛒 Boutique Zixel</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchShopTab('avatars')">Avatars</button>
+                    <button class="tab-btn" onclick="switchShopTab('bonuses')">Bonus</button>
+                </div>
+                <div id="shop-avatars" class="shop-grid"></div>
+                <div id="shop-bonuses" class="shop-grid hidden"></div>
+            </div>
+        </div>
+
+        <!-- MODAL SETTINGS -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('settings-modal')">&times;</span>
+                <h2>⚙️ Paramètres</h2>
+                <p>Changement de pseudo/mot de passe disponible dans le Profil.</p>
+                <button class="z-btn danger" onclick="hardReset()">🗑️ Réinitialiser tout (Danger)</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARGEMENT DES SCRIPTS -->
+    <script src="https://ivxfsuqrambsbfflypae.supabase.co"></script>
+    <script src="data.js"></script>
+    <script src="auth.js"></script>
+    <script src="shop.js"></script>
+    <script src="games.js"></script>
+    <script src="main.js"></script>
+</html>
